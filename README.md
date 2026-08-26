@@ -1,27 +1,19 @@
-# Dental Licensing Exam Simulator
+# Dental Licensing Exam Simulator — 500 Question Bank
 
-גרסת Web של סימולטור בחינת הרישוי ברפואת שיניים.
+גרסה זו כוללת בנק של 500 שאלות.
 
-## העלאה דרך GitHub Desktop
+## אימות
+- שאלות `verified_authoritative` אומתו מול מקורות מקצועיים מוסמכים נגישים כגון ADA, AAPD, AAP/EFP, CDC, NIDCR ו-AAE.
+- שאלות `needs_literature_check` מסומנות במערכת כ-"נדרש אימות" ואינן נכללות בציון המאומת.
+- שאלות מן השחזורים הישנים אינן מקבלות עוד סטטוס מאומת אוטומטי רק משום שהופיעו בשחזור.
+- שאלות המבוססות על ספרות משרד הבריאות שאינה זמינה במלואה במערכת מסומנות לבדיקה מול הספרות.
 
-1. פתח GitHub Desktop.
-2. בחר `File > Clone repository`.
-3. בחר את `EladAba/dental-licensing-exam`.
-4. פתח את התיקייה המקומית של ה-Repository.
-5. העתק אליה את `index.html`, `vercel.json` ו-`README.md` מתוך החבילה הזאת.
-6. חזור ל-GitHub Desktop.
-7. כתוב Summary כגון `Initial web app`.
-8. לחץ `Commit to main`.
-9. לחץ `Push origin`.
+## מבנה מבחן
+כל ניסיון כולל 180 שאלות. המערכת מנסה לבחור כ-120 שאלות מאומתות וכ-60 שאלות לתרגול/בדיקת ספרות כדי לשמור כיסוי גם בתחומים שהמקור המלא שלהם הוא ספר לימוד.
 
-## פריסה ל-Vercel
+## קבצי בקרה
+- `question_bank_audit.csv` — רשימת 500 השאלות, מקור וסטטוס אימות.
+- `audit_summary.json` — סיכום מספרי.
 
-לאחר ה-Push:
-1. פתח Vercel.
-2. בחר `Add New > Project`.
-3. בחר את `EladAba/dental-licensing-exam`.
-4. Framework Preset: `Other`.
-5. Root Directory: ברירת מחדל.
-6. לחץ `Deploy`.
-
-האפליקציה כוללת ממשק בחינה קומפקטי, תמונות משולבות, מסך תוצאות, הדפסה/ייצוא, התחברות משתמשים וחיבור ל-Supabase.
+## פריסה
+החלף את `index.html` ב-Repository, Commit ל-main ו-Push. Vercel יפרוס אוטומטית.

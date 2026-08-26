@@ -1,0 +1,9 @@
+{
+  "total_questions": 500,
+  "verified_authoritative": 280,
+  "needs_literature_check": 220,
+  "unique_concepts": 260,
+  "exam_questions": 180,
+  "target_verified_per_exam": 120,
+  "target_review_per_exam": 60
+}
