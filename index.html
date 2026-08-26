@@ -132,6 +132,8 @@
       <button class="secondary">לימוד</button>
     </div>
   </div>
+
+  <div id="homeRecentAttempts" style="margin-top:24px"></div>
 </section>
 
 <section id="questionReviewMode" class="card hidden" style="margin-bottom:18px">
@@ -286,26 +288,49 @@ async function signupUser(){
   } else authMsg.innerHTML='<div class="success-box">ההרשמה התקבלה וממתינה לאישור. לאחר האישור ניתן להתחבר.</div>';
 }
 async function logoutUser(){ await sb.auth.signOut(); currentUser=null; location.reload(); }
+
+function attemptDerived(a){
+  const answered=Number.isFinite(Number(a.answered_count))?Number(a.answered_count):(Array.isArray(a.answers)?a.answers.filter(x=>x!=null).length:0);
+  const count=Number(a.question_count||180);
+  const answeredPct=count?Math.round(answered/count*100):0;
+  const completed=a.status==='completed'||!!a.completed_at;
+  const duration=Number(a.duration_seconds||0);
+  const remaining=a.remaining_seconds==null?Math.max(0,10800-duration):Number(a.remaining_seconds);
+  return {answered,count,answeredPct,completed,duration,remaining};
+}
+async function loadHomeRecentAttempts(){
+  const box=document.getElementById('homeRecentAttempts'); if(!box)return;
+  const {data,error}=await sb.from('exam_attempts').select('id,started_at,completed_at,created_at,status,score_percent,question_count,duration_seconds,remaining_seconds,answered_count,answers,metadata').order('created_at',{ascending:false}).limit(5);
+  if(error){box.innerHTML='';return}
+  const rows=data||[];
+  box.innerHTML=`<div class="section-title-row"><h2>מבחנים אחרונים</h2><button class="secondary" onclick="showRecentExams()">לכל המבחנים</button></div>`+
+    (rows.length?`<div class="history-table-wrap"><table class="history-table"><thead><tr><th>תאריך</th><th>סטטוס</th><th>ציון</th><th>מענה</th><th>פעולה</th></tr></thead><tbody>${rows.map(a=>{const d=attemptDerived(a);const canResume=!d.completed&&Array.isArray(a.metadata?.question_ids)&&a.metadata.question_ids.length&&d.remaining>0;const canReview=d.completed&&Array.isArray(a.metadata?.question_ids)&&a.metadata.question_ids.length;return `<tr><td>${fmtDate(a.completed_at||a.started_at||a.created_at)}</td><td><span class="status-pill ${d.completed?'status-completed':'status-progress'}">${d.completed?'הושלם':'לא הושלם'}</span></td><td>${d.completed&&a.score_percent!=null?Math.round(Number(a.score_percent))+'%':'—'}</td><td>${d.answered}/${d.count} · ${d.answeredPct}%</td><td>${canResume?`<button class="primary" onclick="resumeAttempt('${a.id}')">המשך</button>`:canReview?`<button class="secondary" onclick="viewCompletedAttempt('${a.id}')">צפייה</button>`:`<button class="secondary" onclick="showRecentExams()">פרטים</button>`}</td></tr>`}).join('')}</tbody></table></div>`:'<p class="muted">עדיין אין מבחנים שמורים.</p>');
+}
+
 async function loadHistory(){
+  const target=document.getElementById('history');
   const {data,error}=await sb.from('exam_attempts')
     .select('id,started_at,completed_at,created_at,last_saved_at,status,score_percent,correct_verified_count,verified_question_count,question_count,duration_seconds,remaining_seconds,answered_count,current_question_index,answers,flags,metadata')
     .order('created_at',{ascending:false}).limit(500);
-  if(error){historySummary.innerHTML='<div class="error-box">לא ניתן לטעון כרגע את היסטוריית המבחנים: '+esc(error.message)+'</div>';return}
-  const rows=data||[];
-  const active=rows.filter(a=>a.status==='in_progress'||!a.completed_at).length;
+  if(error){historySummary.innerHTML='<div class="error-box">לא ניתן לטעון כרגע את היסטוריית המבחנים: '+esc(error.message)+'</div>';if(target)target.innerHTML='';return}
+  const rows=data||[];window._myAttempts=rows;
+  const active=rows.filter(a=>{const d=attemptDerived(a);return !d.completed}).length;
   historySummary.textContent=rows.length?`סה"כ ${rows.length} ניסיונות. ${active?active+' מבחנים ניתנים להמשך.':''}`:'עדיין לא נשמרו מבחנים בחשבון זה.';
-  history.innerHTML=rows.length?`<div class="history-table-wrap"><table class="history-table"><thead><tr><th>תאריך</th><th>סטטוס</th><th>ציון</th><th>אחוז מענה</th><th>זמן</th><th>עמידה בזמן</th><th>פעולות</th></tr></thead><tbody>${rows.map(a=>{
-    const answered=Number.isFinite(Number(a.answered_count))?Number(a.answered_count):(Array.isArray(a.answers)?a.answers.filter(x=>x!=null).length:0);
-    const count=a.question_count||180,answeredPct=count?Math.round(answered/count*100):0;
-    const completed=a.status==='completed'||!!a.completed_at;
-    const duration=Number(a.duration_seconds||0),remaining=a.remaining_seconds==null?Math.max(0,10800-duration):Number(a.remaining_seconds);
-    const timeLabel=completed?`${Math.round(duration/60)} דק׳`:`נותרו ${Math.ceil(remaining/60)} דק׳`;
-    const timing=completed?(duration<=10800?'✓ עמד בזמן':'✗ חריגה מהזמן'):(remaining>0?'בתוך הזמן':'הזמן הסתיים');
-    const canReview=completed&&Array.isArray(a.metadata?.question_ids)&&a.metadata.question_ids.length;
-    const canResume=!completed&&Array.isArray(a.metadata?.question_ids)&&a.metadata.question_ids.length&&remaining>0;
-    return `<tr><td>${fmtDate(a.completed_at||a.started_at||a.created_at)}</td><td><span class="status-pill ${completed?'status-completed':'status-progress'}">${completed?'הושלם':'לא הושלם'}</span></td><td><b>${completed&&a.score_percent!=null?Math.round(Number(a.score_percent))+'%':'—'}</b></td><td>${answered}/${count} · <b>${answeredPct}%</b></td><td>${timeLabel}</td><td>${timing}</td><td><div class="attempt-actions">${canResume?`<button class="primary" onclick="resumeAttempt('${a.id}')">המשך מבחן</button>`:''}${canReview?`<button class="secondary" onclick="viewCompletedAttempt('${a.id}')">צפייה בשאלות</button>`:''}${!canResume&&!canReview?`<button class="secondary" onclick="viewLegacyAttemptInfo('${a.id}')">פרטים</button>`:''}</div></td></tr>`
-  }).join('')}</tbody></table></div>`:'';
-  window._myAttempts=rows;
+  if(!target)return;
+  try{
+    const body=rows.map(a=>{
+      const d=attemptDerived(a);
+      const timeLabel=d.completed?`${Math.round(d.duration/60)} דק׳`:`נותרו ${Math.ceil(d.remaining/60)} דק׳`;
+      const timing=d.completed?(d.duration<=10800?'✓ עמד בזמן':'✗ חריגה מהזמן'):(d.remaining>0?'בתוך הזמן':'הזמן הסתיים');
+      const canReview=d.completed&&Array.isArray(a.metadata?.question_ids)&&a.metadata.question_ids.length;
+      const canResume=!d.completed&&Array.isArray(a.metadata?.question_ids)&&a.metadata.question_ids.length&&d.remaining>0;
+      return `<tr><td>${fmtDate(a.completed_at||a.started_at||a.created_at)}</td><td><span class="status-pill ${d.completed?'status-completed':'status-progress'}">${d.completed?'הושלם':'לא הושלם'}</span></td><td><b>${d.completed&&a.score_percent!=null?Math.round(Number(a.score_percent))+'%':'—'}</b></td><td>${d.answered}/${d.count} · <b>${d.answeredPct}%</b></td><td>${timeLabel}</td><td>${timing}</td><td><div class="attempt-actions">${canResume?`<button class="primary" onclick="resumeAttempt('${a.id}')">המשך מבחן</button>`:''}${canReview?`<button class="secondary" onclick="viewCompletedAttempt('${a.id}')">צפייה בשאלות</button>`:''}${!canResume&&!canReview?`<button class="secondary" onclick="viewLegacyAttemptInfo('${a.id}')">פרטים</button>`:''}</div></td></tr>`;
+    }).join('');
+    target.innerHTML=rows.length?`<div class="history-table-wrap"><table class="history-table"><thead><tr><th>תאריך</th><th>סטטוס</th><th>ציון</th><th>אחוז מענה</th><th>זמן</th><th>עמידה בזמן</th><th>פעולות</th></tr></thead><tbody>${body}</tbody></table></div>`:'';
+  }catch(e){
+    console.error('history render',e);
+    target.innerHTML='<div class="error-box">אירעה שגיאה בהצגת היסטוריית המבחנים.</div>';
+  }
 }
 
 async function submitBugReport(){
@@ -338,13 +363,23 @@ async function loadAdminUsers(){
   window._adminUsers=data||[];
   adminContent.innerHTML=`<div class="modalish"><h3>יצירת משתמש מאושר</h3><div class="form-grid"><input id="newUserEmail" type="email" placeholder="אימייל"><input id="newUserPassword" type="password" placeholder="סיסמה זמנית, 8 תווים ומעלה"></div><div style="margin-top:9px"><button class="primary" onclick="adminCreateUser()">יצירת משתמש</button></div><div id="newUserMsg"></div></div><div class="filters"><input id="adminUserSearch" type="search" placeholder="חיפוש משתמש" oninput="renderAdminUsers()"><select id="adminUserStatus" onchange="renderAdminUsers()"><option value="all">כל הסטטוסים</option><option value="pending">ממתינים</option><option value="approved">מאושרים</option><option value="rejected">דחויים/נעולים</option></select></div><div id="adminUsersTable"></div>`;renderAdminUsers();
 }
-function renderAdminUsers(){const q=(adminUserSearch?.value||'').toLowerCase(),st=adminUserStatus?.value||'all';const rows=(window._adminUsers||[]).filter(u=>(!q||(u.email||'').toLowerCase().includes(q))&&(st==='all'||u.status===st));adminUsersTable.innerHTML=`<div class="table-wrap"><table class="admin-table"><thead><tr><th>אימייל</th><th>סטטוס</th><th>בקשה</th><th>כניסה אחרונה</th><th>מבחנים</th><th>ציון אחרון</th><th>פעולות</th></tr></thead><tbody>${rows.map(u=>`<tr><td>${esc(u.email||'')}</td><td><span class="pill">${esc(u.status||'—')}</span></td><td>${fmtDate(u.requested_at)}</td><td>${fmtDate(u.last_sign_in_at)}</td><td>${u.attempt_count||0}</td><td>${u.last_score==null?'—':Math.round(Number(u.last_score))+'%'}</td><td><div class="user-menu-actions"><button class="primary" onclick="setUserStatus('${u.user_id}','approved')">אישור</button><button class="secondary" onclick="adminUserAction('${u.user_id}','password_reset')">איפוס סיסמה</button><button class="danger" onclick="adminUserAction('${u.user_id}','ban')">נעילה</button><button class="secondary" onclick="adminUserAction('${u.user_id}','unban')">פתיחה</button></div></td></tr>`).join('')}</tbody></table></div>`}
-async function adminUserAction(userId,action){if(action==='ban'&&!confirm('לנעול משתמש זה?'))return;const {data:{session}}=await sb.auth.getSession();const res=await fetch(SUPABASE_URL+'/functions/v1/admin-user-actions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_PUBLISHABLE_KEY},body:JSON.stringify({action,user_id:userId,redirect_to:location.origin})});const body=await res.json().catch(()=>({}));if(!res.ok){alert(body.error||'הפעולה נכשלה');return}alert(action==='password_reset'?'נשלח אימייל לאיפוס סיסמה.':'הפעולה בוצעה.');await loadAdminOverview();await loadAdminUsers()}
-async function setUserStatus(userId,status){
-  const note=prompt('הערת מנהל, אופציונלי:','')||null;
-  const {error}=await sb.rpc('admin_set_user_status',{target_user_id:userId,new_status:status,admin_note:note});
-  if(error){alert(error.message);return} await loadAdminOverview();await loadAdminUsers();
+function renderAdminUsers(){
+  const q=(adminUserSearch?.value||'').toLowerCase(),st=adminUserStatus?.value||'all';
+  const rows=(window._adminUsers||[]).filter(u=>{
+    const hay=[u.first_name,u.last_name,u.phone,u.email].filter(Boolean).join(' ').toLowerCase();
+    return (!q||hay.includes(q))&&(st==='all'||u.status===st)
+  });
+  adminUsersTable.innerHTML=`<div class="table-wrap"><table class="admin-table"><thead><tr><th>שם</th><th>טלפון</th><th>אימייל</th><th>סטטוס</th><th>בקשה</th><th>כניסה אחרונה</th><th>מבחנים</th><th>ממוצע</th><th>פעולות</th></tr></thead><tbody>${rows.map(u=>`<tr><td><b>${esc(userFullName(u))}</b></td><td>${esc(u.phone||'—')}</td><td>${esc(u.email||'')}</td><td><span class="pill">${esc(u.status||'—')}</span></td><td>${fmtDate(u.requested_at)}</td><td>${fmtDate(u.last_sign_in_at)}</td><td>${u.attempt_count||0}</td><td>${u.avg_score==null?'—':Math.round(Number(u.avg_score))+'%'}</td><td><div class="user-menu-actions"><button class="primary" onclick="setUserStatus('${u.user_id}','approved')">אישור</button><button class="secondary" onclick="adminUserAction('${u.user_id}','password_reset')">איפוס סיסמה</button><button class="danger" onclick="adminUserAction('${u.user_id}','ban')">נעילה</button><button class="secondary" onclick="adminUserAction('${u.user_id}','unban')">פתיחה</button></div></td></tr>`).join('')}</tbody></table></div>`
 }
+
+async function setUserStatus(userId,status){
+  const {error}=await sb.rpc('admin_set_user_status',{target_user_id:userId,new_status:status,admin_note:null});
+  if(error){alert('אישור המשתמש נכשל: '+error.message);return}
+  alert(status==='approved'?'המשתמש אושר בהצלחה.':'סטטוס המשתמש עודכן.');
+  await loadAdminOverview();
+  await loadAdminUsers();
+}
+
 async function adminCreateUser(){
   newUserMsg.innerHTML='';const email=newUserEmail.value.trim(),password=newUserPassword.value;
   const {data:{session}}=await sb.auth.getSession();
@@ -522,6 +557,7 @@ async function showPostLoginHome(){
   stopExamTimer(true);
   currentAttemptId=null;
   await loadHistory();
+  await loadHomeRecentAttempts();
 }
 async function goHome(){
   if(examInProgress&&currentAttemptId){await saveDraftAttempt(true);stopExamTimer(false)}
@@ -529,6 +565,7 @@ async function goHome(){
   startScreen.classList.remove('hidden');
   if(!examInProgress){timer.classList.add('idle')}
   await loadHistory();
+  await loadHomeRecentAttempts();
   scrollTo(0,0);
 }
 async function pauseExamAndHome(){
@@ -636,12 +673,6 @@ function moveFlash(d){if(!flashDeck.length)return;flashIndex=(flashIndex+d+flash
 render();
 
 /* UX profile/admin patch */
-async function adminUserAction(action,userId){
- const {error}=await sb.functions.invoke('admin-user-actions',{body:{action,user_id:userId,redirect_to:location.origin}});
- if(error){alert('הפעולה נכשלה: '+error.message);return}
- alert(action==='password_reset'?'נשלח מייל לאיפוס סיסמה.':'הפעולה בוצעה.');
- if(typeof loadAdminUsers==='function')loadAdminUsers();
-}
 function userFullName(u){return [u.first_name,u.last_name].filter(Boolean).join(' ')||'טרם הושלמו פרטים'}
 function csvCell(v){return '"'+String(v??'').replaceAll('"','""')+'"'}
 function exportAdminUsersCSV(rows){
