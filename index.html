@@ -49,16 +49,29 @@
 #timer.idle{opacity:.65}
 @media(max-width:760px){.start-actions{grid-template-columns:1fr}.start-card{min-height:130px}.flash-card,.flash-inner{min-height:440px}}
 
-</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body><header><div style="display:flex;gap:10px;align-items:center"><button id="menuBtn" class="menu-btn hidden" aria-label="תפריט" onclick="openDrawer()">☰</button><div><div class="brand">סימולטור רישוי רפואת שיניים</div><small>180 שאלות • מצב סימולציה</small></div></div><div class="account-bar"><span id="userDisplay" class="user-label"></span><span id="userEmail" class="muted"></span><button id="logoutBtn" class="secondary hidden" onclick="logoutUser()">יציאה</button><div id="timer" class="idle">03:00:00</div></div></header>
+
+.home-btn{background:#eef2f6;border:1px solid #dce3e9}
+.history-table-wrap{overflow:auto;margin-top:16px;border:1px solid #e1e6eb;border-radius:12px}
+.history-table{width:100%;border-collapse:collapse;min-width:920px}
+.history-table th,.history-table td{padding:12px;border-bottom:1px solid #e7ecef;text-align:right;vertical-align:middle}
+.history-table th{background:#f7f9fb}
+.status-pill{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700}
+.status-progress{background:#fff3cd;color:#765600}.status-completed{background:#e8f5e9;color:#176b2c}
+.attempt-actions{display:flex;gap:6px;flex-wrap:wrap}
+.exam-top-actions{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+@media(max-width:700px){.history-table{min-width:780px}}
+
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body><header><div style="display:flex;gap:10px;align-items:center"><button id="menuBtn" class="menu-btn hidden" aria-label="תפריט" onclick="openDrawer()">☰</button><div><div class="brand">סימולטור רישוי רפואת שיניים</div><small>180 שאלות • מצב סימולציה</small></div></div><div class="account-bar"><span id="userDisplay" class="user-label"></span><span id="userRoleBadge" class="admin-badge hidden"></span><span id="userEmail" class="muted"></span><button id="homeBtn" class="home-btn hidden" onclick="goHome()">⌂ דף הבית</button><button id="logoutBtn" class="secondary hidden" onclick="logoutUser()">יציאה</button><div id="timer" class="idle">03:00:00</div></div></header>
 <div id="drawerOverlay" class="drawer-overlay hidden" onclick="closeDrawer()"></div>
 <aside id="drawer" class="drawer hidden" aria-label="תפריט ראשי">
   <button class="secondary close" onclick="closeDrawer()">✕</button>
   <h3>תפריט</h3>
   <div id="drawerUser" class="muted" style="margin-bottom:10px"></div>
-  <button class="primary" onclick="showExamHome()">📝 מבחן חדש / המשך</button>
+  <button class="primary" onclick="goHome();closeDrawer()">⌂ דף הבית</button>
+  <button class="secondary" onclick="goHome();closeDrawer()">📝 התחלה / למידה</button>
   <button class="secondary" onclick="showRecentExams()">🕘 המבחנים האחרונים</button>
   <button class="secondary" onclick="showBugReporter()">🐞 דיווח על באג</button>
-  <button id="adminMenuBtn" class="secondary hidden" onclick="showAdmin()">🛡️ ניהול מערכת <span class="admin-badge">Admin</span></button>
+  <button id="adminMenuBtn" class="secondary hidden" onclick="showAdmin()">🛡️ Back Office / ניהול מערכת <span class="admin-badge">Admin</span></button>
   <button class="secondary" onclick="logoutUser()">יציאה</button>
 </aside>
 <main>
@@ -73,12 +86,12 @@
   </div>
 </section>
 <section id="dashboard" class="card hidden" style="margin-bottom:18px">
-  <div class="section-title-row"><h2>המבחנים האחרונים שלי</h2><button class="secondary" onclick="showExamHome()">חזרה למבחן</button></div>
+  <div class="section-title-row"><h2>המבחנים שלי</h2><button class="secondary" onclick="goHome()">⌂ דף הבית</button></div>
   <div id="historySummary" class="muted"></div>
   <div id="history" class="history"></div>
 </section>
 <section id="bugReporter" class="card hidden" style="margin-bottom:18px">
-  <div class="section-title-row"><h2>דיווח על באג</h2><button class="secondary" onclick="showExamHome()">חזרה</button></div>
+  <div class="section-title-row"><h2>דיווח על באג</h2><button class="secondary" onclick="goHome()">⌂ דף הבית</button></div>
   <p class="muted">הדיווח נשמר בבאק אופיס יחד עם פרטי הדפדפן והעמוד, ללא חשיפת תשובות של משתמשים אחרים.</p>
   <div class="form-grid">
     <input id="bugTitle" placeholder="כותרת קצרה">
@@ -89,7 +102,7 @@
 </section>
 
 <section id="adminPanel" class="card hidden" style="margin-bottom:18px">
-  <div class="section-title-row"><h1>Back Office • ניהול מערכת</h1><button class="secondary" onclick="showExamHome()">חזרה למבחן</button></div>
+  <div class="section-title-row"><h1>Back Office • ניהול מערכת</h1><button class="secondary" onclick="goHome()">⌂ דף הבית</button></div>
   <div id="adminStats" class="admin-grid"></div>
   <div class="admin-tabs">
     <button id="tabUsers" onclick="adminTab('users')">משתמשים ואישורים</button>
@@ -103,7 +116,7 @@
 <section id="startScreen" class="card hidden start-shell" style="margin-bottom:18px">
   <div class="start-hero">
     <h1>מה תרצה לעשות?</h1>
-    <p class="muted">בחר מצב עבודה. שעון הבחינה מתחיל רק לאחר לחיצה על "התחלת מבחן חדש".</p>
+    <p class="muted">בחר מצב עבודה. שעון הבחינה מתחיל רק לאחר לחיצה על "התחלת מבחן חדש". מנהל מערכת מקבל בנוסף גישה ל-Back Office דרך תפריט ההמבורגר.</p>
   </div>
   <div class="start-actions">
     <div class="start-card" onclick="startNewExam()">
@@ -148,7 +161,7 @@
     <div class="flash-nav"><button class="secondary" onclick="event.stopPropagation();moveFlash(-1)">הקודם</button><button class="primary" onclick="event.stopPropagation();toggleFlashCard()">הפוך כרטיס</button><button class="secondary" onclick="event.stopPropagation();moveFlash(1)">הבא</button></div>
   </div>
 </section>
-<section id="exam" class="card hidden"><div class="meta"><span class="tag" id="num"></span><span class="tag" id="topic"></span><span class="tag" id="source"></span></div><h2 id="stem"></h2><div id="questionImage"></div><div id="options"></div><label><input type="checkbox" id="flag"> סימון לחזרה</label><div class="nav"><button class="secondary" onclick="move(-1)">הקודמת</button><button class="danger" onclick="finish()">סיום והגשה</button><button class="primary" onclick="move(1)">הבאה</button></div><div id="grid" aria-label="ניווט מהיר בין שאלות"></div></section><section id="results" class="card hidden"><h1>תוצאות וסקירת תשובות</h1><div id="score"></div><div class="result-actions"><button class="print-btn" onclick="window.print()">הדפסה / שמירה כ PDF</button><button class="export-btn" onclick="exportReviewHtml()">ייצוא סיכום ל HTML</button></div><div class="filters"><select id="statusFilter" onchange="renderReview()"><option value="all">כל השאלות</option><option value="wrong">שגויות</option><option value="correct">נכונות</option><option value="unanswered">לא נענו</option><option value="flagged">סומנו לחזרה</option></select><select id="topicFilter" onchange="renderReview()"><option value="all">כל התחומים</option></select><input type="search" id="search" placeholder="חיפוש בשאלות" oninput="renderReview()"></div><div id="review"></div></section></main>
+<section id="exam" class="card hidden"><div class="exam-top-actions"><button class="secondary" onclick="pauseExamAndHome()">⏸ שמירה ועצירה</button><button class="home-btn" onclick="pauseExamAndHome()">⌂ דף הבית</button></div><div class="meta"><span class="tag" id="num"></span><span class="tag" id="topic"></span><span class="tag" id="source"></span></div><h2 id="stem"></h2><div id="questionImage"></div><div id="options"></div><label><input type="checkbox" id="flag"> סימון לחזרה</label><div class="nav"><button class="secondary" onclick="move(-1)">הקודמת</button><button class="danger" onclick="finish()">סיום והגשה</button><button class="primary" onclick="move(1)">הבאה</button></div><div id="grid" aria-label="ניווט מהיר בין שאלות"></div></section><section id="results" class="card hidden"><div class="section-title-row"><h1>תוצאות וסקירת תשובות</h1><button class="home-btn" onclick="goHome()">⌂ דף הבית</button></div><div id="score"></div><div class="result-actions"><button class="print-btn" onclick="window.print()">הדפסה / שמירה כ PDF</button><button class="export-btn" onclick="exportReviewHtml()">ייצוא סיכום ל HTML</button></div><div class="filters"><select id="statusFilter" onchange="renderReview()"><option value="all">כל השאלות</option><option value="wrong">שגויות</option><option value="correct">נכונות</option><option value="unanswered">לא נענו</option><option value="flagged">סומנו לחזרה</option></select><select id="topicFilter" onchange="renderReview()"><option value="all">כל התחומים</option></select><input type="search" id="search" placeholder="חיפוש בשאלות" oninput="renderReview()"></div><div id="review"></div></section></main>
 <div id="profileOverlay" class="profile-overlay hidden">
  <div class="profile-modal" dir="rtl">
   <h2>השלמת פרטים</h2>
@@ -171,13 +184,14 @@ let adminCurrentTab='users';
 function hideMainSections(){ ['dashboard','bugReporter','adminPanel','results','startScreen','questionReviewMode','studyCardsMode'].forEach(id=>document.getElementById(id)?.classList.add('hidden')); exam.classList.add('hidden'); }
 function openDrawer(){ drawer.classList.remove('hidden');drawerOverlay.classList.remove('hidden'); }
 function closeDrawer(){ drawer.classList.add('hidden');drawerOverlay.classList.add('hidden'); }
-function showExamHome(){ closeDrawer(); hideMainSections(); exam.classList.remove('hidden'); if(!examStartedAt) examStartedAt=new Date(); render(); logEvent('view_exam'); }
+function showExamHome(){closeDrawer();goHome();}
 async function showRecentExams(){ closeDrawer(); hideMainSections(); dashboard.classList.remove('hidden'); await loadHistory(); logEvent('view_recent_exams'); }
 function showBugReporter(){ closeDrawer();hideMainSections();bugReporter.classList.remove('hidden');logEvent('view_bug_reporter'); }
-async function showAdmin(){ if(!isAdmin)return;closeDrawer();hideMainSections();adminPanel.classList.remove('hidden');await loadAdminOverview();await adminTab(adminCurrentTab);logEvent('view_admin'); }
+async function showAdmin(){ if(!isAdmin){alert('אין הרשאת מנהל לחשבון זה.');return;}closeDrawer();hideMainSections();adminPanel.classList.remove('hidden');await loadAdminOverview();await adminTab(adminCurrentTab);logEvent('view_admin'); }
 async function logEvent(event_type,details={}){ if(!currentUser)return; try{ await sb.from('activity_logs').insert({user_id:currentUser.id,event_type,page:location.pathname,details}); }catch(_e){} }
 window.addEventListener('error',e=>logEvent('client_error',{message:String(e.message||''),source:String(e.filename||''),line:e.lineno||null}));
 window.addEventListener('unhandledrejection',e=>logEvent('client_unhandled_rejection',{message:String(e.reason?.message||e.reason||'')}));
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&examInProgress)saveDraftAttempt(true)});
 
 
 let currentProfile=null;
@@ -218,17 +232,34 @@ async function saveProfileAndContinue(){
   closeProfileOverlay();
   await showPostLoginHome();
 }
+
+async function loadCurrentRole(){
+  const {data,error}=await sb.rpc('my_app_role');
+  if(error){console.error('role lookup',error);isAdmin=false;return 'student'}
+  const role=String(data||'student');
+  isAdmin=(role==='admin');
+  adminMenuBtn.classList.toggle('hidden',!isAdmin);
+  userRoleBadge.textContent=isAdmin?'Admin':'סטודנט';
+  userRoleBadge.classList.toggle('hidden',false);
+  return role;
+}
+
 async function setAuthUI(user){
   currentUser=user||null;
   auth.classList.toggle('hidden',!!user);
   logoutBtn.classList.toggle('hidden',!user);
+  homeBtn.classList.toggle('hidden',!user);
   menuBtn.classList.toggle('hidden',!user);
   if(!user){
+    isAdmin=false;
+    adminMenuBtn.classList.add('hidden');
+    userRoleBadge.classList.add('hidden');
     hideMainSections();
     userDisplay.textContent=''; userEmail.textContent='';
     stopExamTimer(true);
     return;
   }
+  await loadCurrentRole();
   const ok=await ensureProfile(user);
   if(!ok){hideMainSections();return}
   await showPostLoginHome();
@@ -256,10 +287,25 @@ async function signupUser(){
 }
 async function logoutUser(){ await sb.auth.signOut(); currentUser=null; location.reload(); }
 async function loadHistory(){
-  const {data,error}=await sb.from('exam_attempts').select('id,completed_at,score_percent,correct_verified_count,verified_question_count,question_count,duration_seconds').order('created_at',{ascending:false}).limit(20);
-  if(error){historySummary.textContent='לא ניתן לטעון כרגע את היסטוריית המבחנים.';return}
-  historySummary.textContent=data.length?`נשמרו ${data.length} ניסיונות אחרונים בחשבון שלך.`:'עדיין לא נשמרו ניסיונות בחשבון זה.';
-  history.innerHTML=data.map((a,n)=>`<div class="history-item"><b>${a.completed_at?new Date(a.completed_at).toLocaleString('he-IL'):'מבחן'}</b><br>ציון בשאלות המאומתות: <b>${a.score_percent==null?'—':Math.round(Number(a.score_percent))+'%'}</b> • ${a.correct_verified_count}/${a.verified_question_count} • ${Math.round((a.duration_seconds||0)/60)} דקות<div class="attempt-details">${a.question_count||180} שאלות • ניסיון ${data.length-n}</div></div>`).join('');
+  const {data,error}=await sb.from('exam_attempts')
+    .select('id,started_at,completed_at,created_at,last_saved_at,status,score_percent,correct_verified_count,verified_question_count,question_count,duration_seconds,remaining_seconds,answered_count,current_question_index,answers,flags,metadata')
+    .order('created_at',{ascending:false}).limit(500);
+  if(error){historySummary.innerHTML='<div class="error-box">לא ניתן לטעון כרגע את היסטוריית המבחנים: '+esc(error.message)+'</div>';return}
+  const rows=data||[];
+  const active=rows.filter(a=>a.status==='in_progress'||!a.completed_at).length;
+  historySummary.textContent=rows.length?`סה"כ ${rows.length} ניסיונות. ${active?active+' מבחנים ניתנים להמשך.':''}`:'עדיין לא נשמרו מבחנים בחשבון זה.';
+  history.innerHTML=rows.length?`<div class="history-table-wrap"><table class="history-table"><thead><tr><th>תאריך</th><th>סטטוס</th><th>ציון</th><th>אחוז מענה</th><th>זמן</th><th>עמידה בזמן</th><th>פעולות</th></tr></thead><tbody>${rows.map(a=>{
+    const answered=Number.isFinite(Number(a.answered_count))?Number(a.answered_count):(Array.isArray(a.answers)?a.answers.filter(x=>x!=null).length:0);
+    const count=a.question_count||180,answeredPct=count?Math.round(answered/count*100):0;
+    const completed=a.status==='completed'||!!a.completed_at;
+    const duration=Number(a.duration_seconds||0),remaining=a.remaining_seconds==null?Math.max(0,10800-duration):Number(a.remaining_seconds);
+    const timeLabel=completed?`${Math.round(duration/60)} דק׳`:`נותרו ${Math.ceil(remaining/60)} דק׳`;
+    const timing=completed?(duration<=10800?'✓ עמד בזמן':'✗ חריגה מהזמן'):(remaining>0?'בתוך הזמן':'הזמן הסתיים');
+    const canReview=completed&&Array.isArray(a.metadata?.question_ids)&&a.metadata.question_ids.length;
+    const canResume=!completed&&Array.isArray(a.metadata?.question_ids)&&a.metadata.question_ids.length&&remaining>0;
+    return `<tr><td>${fmtDate(a.completed_at||a.started_at||a.created_at)}</td><td><span class="status-pill ${completed?'status-completed':'status-progress'}">${completed?'הושלם':'לא הושלם'}</span></td><td><b>${completed&&a.score_percent!=null?Math.round(Number(a.score_percent))+'%':'—'}</b></td><td>${answered}/${count} · <b>${answeredPct}%</b></td><td>${timeLabel}</td><td>${timing}</td><td><div class="attempt-actions">${canResume?`<button class="primary" onclick="resumeAttempt('${a.id}')">המשך מבחן</button>`:''}${canReview?`<button class="secondary" onclick="viewCompletedAttempt('${a.id}')">צפייה בשאלות</button>`:''}${!canResume&&!canReview?`<button class="secondary" onclick="viewLegacyAttemptInfo('${a.id}')">פרטים</button>`:''}</div></td></tr>`
+  }).join('')}</tbody></table></div>`:'';
+  window._myAttempts=rows;
 }
 
 async function submitBugReport(){
@@ -328,14 +374,22 @@ async function loadAdminLogs(){
 }
 function fmtDate(v){return v?new Date(v).toLocaleString('he-IL'):'—'}
 async function saveAttempt(){
-  if(!currentUser)return;
+  if(!currentUser)return false;
   const verified=Q.filter(q=>q.scoreEligible!==false&&q.answer!=null).length;
   const correct=Q.reduce((n,q,i)=>n+(q.scoreEligible!==false&&q.answer!=null&&ans[i]===q.answer),0);
-  const duration=Math.max(0,Math.round((Date.now()-(examStartedAt?examStartedAt.getTime():Date.now()))/1000));
-  const payload={user_id:currentUser.id,started_at:examStartedAt?examStartedAt.toISOString():new Date().toISOString(),completed_at:new Date().toISOString(),duration_seconds:duration,question_count:Q.length,verified_question_count:verified,correct_verified_count:correct,score_percent:verified?Math.round(correct/verified*10000)/100:null,answers:ans,flags:flags,metadata:{mode:'simulation',version:'web-v1'}};
-  const {error}=await sb.from('exam_attempts').insert(payload);
+  const duration=EXAM_SECONDS-seconds;
+  const payload={
+    user_id:currentUser.id,status:'completed',started_at:examStartedAt?examStartedAt.toISOString():new Date().toISOString(),
+    completed_at:new Date().toISOString(),duration_seconds:duration,question_count:Q.length,
+    verified_question_count:verified,correct_verified_count:correct,score_percent:verified?Math.round(correct/verified*10000)/100:null,
+    answers:ans,flags:flags,last_saved_at:new Date().toISOString(),current_question_index:idx,remaining_seconds:seconds,
+    answered_count:answeredCount(),metadata:{mode:'simulation',version:'web-v4-resumable',question_ids:examQuestionIds()}
+  };
+  let error;
+  if(currentAttemptId)({error}=await sb.from('exam_attempts').update(payload).eq('id',currentAttemptId));
+  else ({error}=await sb.from('exam_attempts').insert(payload));
   if(error){console.error(error);return false}
-  await loadHistory(); return true;
+  currentAttemptId=null;stopDraftAutosave();await loadHistory();return true;
 }
 sb.auth.getSession().then(({data})=>setAuthUI(data.session?.user||null));
 sb.auth.onAuthStateChange((_event,session)=>setAuthUI(session?.user||null));
@@ -365,7 +419,7 @@ function buildExam(bank,n=180){
   if(selected.length<n) addFrom(bank.filter(q=>q.verificationStatus==='verified_authoritative'),n,4);
   return shuffle(selected).slice(0,n);
 }
-const Q=buildExam(BANK,180);
+let Q=buildExam(BANK,180);
 
 const QUESTION_IMAGES = {
 "w2025-q46":"data:image/png;base64,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drvPP//8b3/7W/pNxecj2yiNRrZ390HN8/Pz9957j6nO9fU1SnhNdzMrrT2qVKj0IUpCpkSNVGPgtM0khrBuMqLxcyphI/Z6oPp9d3f35s2b9Xr9448/3t7eQkY1j2jLWlkulZy2rPSA8ZeXl19++eXHH3+sRPgd6LeC8ruVDyU77qqeEfDWEpw0yubYapFlE7urh1PdsWUM9h/eMYdTriOzCS4oaaXexw0UGOv169f/+c9/vv/++9vbW+wBoXDAbWumECkDfqNa/Nlnn/3f//3fcdbHfg1oBt8vcRKQSpXm5ubmp59+goNs2xarc4ztnQtAfP7s2bO7uztEefvuR+viiLlbsekDuvamu1K83+9fvXqFDWhYQjSzxWLBZeIY8VDvm7Kdcr/ff/DBB3/+858///zzo73v/05ASdnI13+q1ltvUoHu7u6+++47ZFlN04Df3H5q4netrLPRKbIomyTh6RtxGGgYtJaspfX5fL7dbhHDM9HP3fMalN8mVm0+n//pT3/6y1/+cnZ2dpz9yO8KHAubsG5o3V0lakgZzSJAY8GS9lzLtDS5P//8s5VYCcmP9u/Qi3HicMDhHIF1z85lUEk/zcgudtXILv1PPvnk73//OzLJ36t+x9CXF46mLgAm0HKywMmbStAklbJUclxu7cZ+y9y/qci6/OvjN9ljotyuBye1mtppkMhm8BEXFxfffPPN559/zsVyHfd3w29C1Xq/cyAPcs6IzDn6Ox/roD5VIt1POeeLi4uvv/7666+/1g0a2uZ3wO8YecWbv8agGn9xuDEJoevn18AtIrPf709OTv70pz998803H3744b77RhXh98dvm0TF6cWzLInuu2eCje9nGA4K9EzKeXpzuVz+8Y9//Oabb7744gv8tFgsuEmEcITzmQDR1cVfB+73PThwXy1htX96zSSFkdRdu1PMh5F0oYD+mkKt17o+m3mH69al+LlsHUgpffrpp//85z//+te/YkkeKbgL1uyI/B6+/87HIoEeHde1tLLBSGtbj3YS27jGVe87chbu14uLiy+//PIf//jHV199hUyd+2st2MKnHFDxP/j9wpG/D/w/mBj+x+//v+D/AdG/gUvmF6g4AAAAAElFTkSuQmCC",
@@ -389,7 +443,52 @@ function imageHtml(q){
   return `<div class="qimg-wrap"><img src="${src}" alt="תמונה לשאלה ${q.sourceNumber}"><div class="qimg-caption">תמונה ממוקדת השייכת לשאלה בלבד • ${esc(q.source)} • שאלה ${q.sourceNumber}</div></div>`;
 }
 let idx=0,ans=Array(Q.length).fill(null),flags=Array(Q.length).fill(false),seconds=3*60*60;
-function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}function render(){let q=Q[idx];num.textContent=`שאלה ${idx+1} מתוך ${Q.length}`;topic.textContent=q.topic;source.textContent=(q.verificationStatus==='verified_authoritative'?'✓ מאומת':'⚠ נדרש אימות')+' • '+q.source+(q.variant?' • וריאציית תרגול':'');stem.textContent=q.stem;questionImage.innerHTML=imageHtml(q);options.innerHTML=q.options.map((o,i)=>`<label class="opt"><input type="radio" name="o" ${ans[idx]===i?'checked':''} onchange="ans[${idx}]=${i};renderGrid()">${String.fromCharCode(1488+i)}. ${esc(o)}</label>`).join('');flag.checked=flags[idx];renderGrid()}flag.onchange=()=>{flags[idx]=flag.checked;renderGrid()};function move(d){idx=Math.max(0,Math.min(Q.length-1,idx+d));render()}function renderGrid(){grid.innerHTML=Q.map((_,i)=>`<button class="${ans[i]!=null?'answered ':''}${i===idx?'current ':''}${flags[i]?'flagged':''}" onclick="idx=${i};render()">${i+1}</button>`).join('')}
+let currentAttemptId=null;
+let draftSaveTimer=null;
+let draftDebounce=null;
+const EXAM_SECONDS=3*60*60;
+function answeredCount(){return ans.filter(x=>x!=null).length}
+function examQuestionIds(){return Q.map(q=>q.id)}
+function questionsFromIds(ids){
+  const map=new Map(BANK.map(q=>[String(q.id),q]));
+  return (ids||[]).map(id=>map.get(String(id))).filter(Boolean);
+}
+function scheduleDraftSave(){
+  if(!examInProgress||!currentAttemptId)return;
+  clearTimeout(draftDebounce);
+  draftDebounce=setTimeout(()=>saveDraftAttempt(true),700);
+}
+async function createDraftAttempt(){
+  if(!currentUser)return false;
+  const payload={
+    user_id:currentUser.id,status:'in_progress',started_at:examStartedAt.toISOString(),completed_at:null,
+    duration_seconds:EXAM_SECONDS-seconds,question_count:Q.length,verified_question_count:Q.filter(q=>q.scoreEligible!==false&&q.answer!=null).length,
+    correct_verified_count:0,score_percent:null,answers:ans,flags:flags,last_saved_at:new Date().toISOString(),
+    current_question_index:idx,remaining_seconds:seconds,answered_count:answeredCount(),
+    metadata:{mode:'simulation',version:'web-v4-resumable',question_ids:examQuestionIds()}
+  };
+  const {data,error}=await sb.from('exam_attempts').insert(payload).select('id').single();
+  if(error){console.error('create draft',error);return false}
+  currentAttemptId=data.id;return true;
+}
+async function saveDraftAttempt(silent=false){
+  if(!currentUser||!currentAttemptId)return false;
+  const payload={
+    status:'in_progress',completed_at:null,duration_seconds:EXAM_SECONDS-seconds,answers:ans,flags:flags,
+    last_saved_at:new Date().toISOString(),current_question_index:idx,remaining_seconds:seconds,answered_count:answeredCount(),
+    metadata:{mode:'simulation',version:'web-v4-resumable',question_ids:examQuestionIds()}
+  };
+  const {error}=await sb.from('exam_attempts').update(payload).eq('id',currentAttemptId);
+  if(error){console.error('save draft',error);if(!silent)alert('שמירת המבחן נכשלה: '+error.message);return false}
+  return true;
+}
+function startDraftAutosave(){
+  if(draftSaveTimer)clearInterval(draftSaveTimer);
+  draftSaveTimer=setInterval(()=>{if(examInProgress)saveDraftAttempt(true)},15000);
+}
+function stopDraftAutosave(){if(draftSaveTimer){clearInterval(draftSaveTimer);draftSaveTimer=null}}
+
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}function render(){let q=Q[idx];num.textContent=`שאלה ${idx+1} מתוך ${Q.length}`;topic.textContent=q.topic;source.textContent=(q.verificationStatus==='verified_authoritative'?'✓ מאומת':'⚠ נדרש אימות')+' • '+q.source+(q.variant?' • וריאציית תרגול':'');stem.textContent=q.stem;questionImage.innerHTML=imageHtml(q);options.innerHTML=q.options.map((o,i)=>`<label class="opt"><input type="radio" name="o" ${ans[idx]===i?'checked':''} onchange="ans[${idx}]=${i};renderGrid();scheduleDraftSave()">${String.fromCharCode(1488+i)}. ${esc(o)}</label>`).join('');flag.checked=flags[idx];renderGrid()}flag.onchange=()=>{flags[idx]=flag.checked;renderGrid();scheduleDraftSave()};function move(d){idx=Math.max(0,Math.min(Q.length-1,idx+d));render();scheduleDraftSave()}function renderGrid(){grid.innerHTML=Q.map((_,i)=>`<button class="${ans[i]!=null?'answered ':''}${i===idx?'current ':''}${flags[i]?'flagged':''}" onclick="idx=${i};render();scheduleDraftSave()">${i+1}</button>`).join('')}
 
 let timerHandle=null;
 let examInProgress=false;
@@ -410,7 +509,8 @@ function startExamTimer(){
 function stopExamTimer(reset=false){
   examInProgress=false;
   if(timerHandle){clearInterval(timerHandle);timerHandle=null}
-  if(reset){seconds=3*60*60;renderTimer();timer.classList.add('idle')}
+  stopDraftAutosave();
+  if(reset){seconds=EXAM_SECONDS;renderTimer();timer.classList.add('idle')}
 }
 
 async function finish(fromTimeout=false){if(!fromTimeout&&!confirm('להגיש את הבחינה ולעבור למסך התוצאות?'))return;stopExamTimer(false);await logEvent('exam_submitted',{question_index:idx});exam.classList.add('hidden');results.classList.remove('hidden');let topics=[...new Set(Q.map(q=>q.topic))];topicFilter.innerHTML='<option value="all">כל התחומים</option>'+topics.map(t=>`<option>${t}</option>`).join('');renderReview();const saved=await saveAttempt();score.insertAdjacentHTML('afterbegin',saved?'<div class="success-box">התוצאה נשמרה בחשבון האישי שלך.</div>':'<div class="error-box">התוצאה מוצגת כאן, אך השמירה לחשבון נכשלה.</div>');scrollTo(0,0)}
@@ -420,28 +520,68 @@ async function showPostLoginHome(){
   startScreen.classList.remove('hidden');
   dashboard.classList.add('hidden');
   stopExamTimer(true);
+  currentAttemptId=null;
   await loadHistory();
 }
-function goHome(){
+async function goHome(){
+  if(examInProgress&&currentAttemptId){await saveDraftAttempt(true);stopExamTimer(false)}
   hideMainSections();
   startScreen.classList.remove('hidden');
-  stopExamTimer(true);
+  if(!examInProgress){timer.classList.add('idle')}
+  await loadHistory();
   scrollTo(0,0);
 }
-function startNewExam(){
+async function pauseExamAndHome(){
+  if(!examInProgress){await goHome();return}
+  await saveDraftAttempt(false);
+  stopExamTimer(false);
+  await logEvent('exam_paused',{attempt_id:currentAttemptId,answered:answeredCount(),remaining_seconds:seconds});
+  hideMainSections();startScreen.classList.remove('hidden');timer.classList.add('idle');await loadHistory();scrollTo(0,0);
+}
+async function resumeAttempt(id){
+  const {data:a,error}=await sb.from('exam_attempts').select('*').eq('id',id).single();
+  if(error||!a){alert('לא ניתן לטעון את המבחן.');return}
+  if(a.completed_at||a.status==='completed'){alert('המבחן כבר הושלם.');return}
+  const restored=questionsFromIds(a.metadata?.question_ids);
+  if(!restored.length){alert('למבחן הישן הזה לא נשמרה מפת שאלות ולכן לא ניתן להמשיך אותו.');return}
+  Q=restored;ans=Array.isArray(a.answers)?a.answers:Array(Q.length).fill(null);flags=Array.isArray(a.flags)?a.flags:Array(Q.length).fill(false);
+  while(ans.length<Q.length)ans.push(null);while(flags.length<Q.length)flags.push(false);
+  idx=Math.max(0,Math.min(Q.length-1,Number(a.current_question_index||0)));
+  seconds=Math.max(0,Number(a.remaining_seconds??(EXAM_SECONDS-Number(a.duration_seconds||0))));
+  if(seconds<=0){alert('זמן המבחן הסתיים. ניתן להגיש אותו אך לא להמשיך לענות.');return}
+  currentAttemptId=a.id;examStartedAt=new Date(a.started_at||a.created_at||Date.now());examInProgress=true;
+  hideMainSections();exam.classList.remove('hidden');renderTimer();timer.classList.remove('idle');startExamTimer();startDraftAutosave();render();
+  await logEvent('exam_resumed',{attempt_id:id,answered:answeredCount(),remaining_seconds:seconds});scrollTo(0,0);
+}
+async function viewCompletedAttempt(id){
+  const {data:a,error}=await sb.from('exam_attempts').select('*').eq('id',id).single();
+  if(error||!a){alert('לא ניתן לטעון את המבחן.');return}
+  const restored=questionsFromIds(a.metadata?.question_ids);
+  if(!restored.length){viewLegacyAttemptInfo(id);return}
+  stopExamTimer(true);currentAttemptId=null;Q=restored;ans=Array.isArray(a.answers)?a.answers:Array(Q.length).fill(null);flags=Array.isArray(a.flags)?a.flags:Array(Q.length).fill(false);
+  while(ans.length<Q.length)ans.push(null);while(flags.length<Q.length)flags.push(false);
+  hideMainSections();results.classList.remove('hidden');
+  const topics=[...new Set(Q.map(q=>q.topic))];topicFilter.innerHTML='<option value="all">כל התחומים</option>'+topics.map(t=>`<option>${esc(t)}</option>`).join('');
+  renderReview();score.insertAdjacentHTML('afterbegin',`<div class="success-box">צפייה במבחן שהושלם בתאריך ${fmtDate(a.completed_at)}. ציון שמור: <b>${a.score_percent==null?'—':Math.round(Number(a.score_percent))+'%'}</b>.</div>`);
+  await logEvent('completed_attempt_reviewed',{attempt_id:id});scrollTo(0,0);
+}
+function viewLegacyAttemptInfo(id){
+  const a=(window._myAttempts||[]).find(x=>x.id===id);
+  if(!a){alert('לא נמצאו פרטי המבחן.');return}
+  alert(`מבחן מתאריך ${fmtDate(a.completed_at||a.created_at)}
+ציון: ${a.score_percent==null?'—':Math.round(Number(a.score_percent))+'%'}
+מענה: ${a.answered_count||0}/${a.question_count||180}
+המבחן נוצר לפני שהופעלה שמירת מפת שאלות, ולכן לא ניתן להציג את השאלות המלאות שלו.`);
+}
+async function startNewExam(){
   hideMainSections();
-  ans=Array(Q.length).fill(null);
-  flags=Array(Q.length).fill(false);
-  idx=0;
-  seconds=3*60*60;
-  examStartedAt=new Date();
-  examInProgress=true;
-  renderTimer();
-  exam.classList.remove('hidden');
-  startExamTimer();
-  render();
-  logEvent('exam_started',{question_count:Q.length});
-  scrollTo(0,0);
+  Q=buildExam(BANK,180);
+  ans=Array(Q.length).fill(null);flags=Array(Q.length).fill(false);idx=0;seconds=EXAM_SECONDS;
+  currentAttemptId=null;examStartedAt=new Date();examInProgress=true;renderTimer();exam.classList.remove('hidden');
+  const created=await createDraftAttempt();
+  if(!created){examInProgress=false;goHome();alert('לא ניתן ליצור מבחן חדש כרגע.');return}
+  startExamTimer();startDraftAutosave();render();
+  await logEvent('exam_started',{attempt_id:currentAttemptId,question_count:Q.length});scrollTo(0,0);
 }
 function populateStudyTopics(){
   const topics=[...new Set(BANK.map(q=>q.topic).filter(Boolean))].sort();
