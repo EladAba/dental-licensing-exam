@@ -9,7 +9,47 @@
 .auth-card{max-width:520px;margin:40px auto}.auth-grid{display:grid;gap:10px}.auth-grid input{padding:12px;border:1px solid #ccd3da;border-radius:8px;font-size:16px}.account-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.history{margin-top:18px}.history-item{padding:12px;border:1px solid #e2e6ea;border-radius:10px;margin:8px 0;background:#fafbfc}.muted{color:#68737d}.success-box{background:#ecf7ee;border:1px solid #b7dfbe;padding:10px;border-radius:8px;margin:10px 0}.error-box{background:#fff0f0;border:1px solid #f2b8b5;padding:10px;border-radius:8px;margin:10px 0}
 
 .menu-btn{font-size:22px;line-height:1;background:#eef2f6;padding:9px 12px}.drawer-overlay{position:fixed;inset:0;background:#0006;z-index:20}.drawer{position:fixed;top:0;right:0;width:min(86vw,340px);height:100vh;background:#fff;z-index:21;padding:18px;box-shadow:-6px 0 24px #0002;overflow:auto}.drawer h3{margin-top:8px}.drawer button{width:100%;margin:5px 0;text-align:right}.drawer .close{width:auto;float:left}.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}.stat-card{border:1px solid #e1e6ea;border-radius:12px;padding:14px;background:#fafbfc}.stat-card b{font-size:24px;display:block;margin-top:5px}.table-wrap{overflow:auto;border:1px solid #e1e6ea;border-radius:10px}.admin-table{width:100%;border-collapse:collapse;min-width:760px}.admin-table th,.admin-table td{padding:10px;border-bottom:1px solid #edf0f2;text-align:right;vertical-align:top}.admin-table th{background:#f5f7f9;position:sticky;top:0}.pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef2f6;font-size:12px}.admin-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.admin-tabs button.active{background:#1565c0;color:#fff}.modalish{border:1px solid #e1e6ea;border-radius:12px;padding:16px;background:#fff;margin:12px 0}.form-grid{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.form-grid input,.form-grid textarea,.form-grid select{width:100%;padding:10px;border:1px solid #ccd3da;border-radius:8px}.bug-fab{position:fixed;left:16px;bottom:16px;z-index:8;border-radius:999px;background:#263238;color:#fff}.section-title-row{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.clickable{cursor:pointer}.attempt-details{font-size:13px;color:#68737d}.user-menu-actions{display:flex;gap:6px;flex-wrap:wrap}.user-menu-actions button{padding:7px 10px}.log-row{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}.history-item{cursor:default}.history-item button{margin-top:8px}.admin-badge{background:#fff3cd;border:1px solid #ffe69c;border-radius:999px;padding:4px 8px;font-size:12px}
-</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body><header><div style="display:flex;gap:10px;align-items:center"><button id="menuBtn" class="menu-btn hidden" aria-label="תפריט" onclick="openDrawer()">☰</button><div><div class="brand">סימולטור רישוי רפואת שיניים</div><small>180 שאלות • מצב סימולציה</small></div></div><div class="account-bar"><span id="userEmail" class="muted"></span><button id="logoutBtn" class="secondary hidden" onclick="logoutUser()">יציאה</button><div id="timer">03:00:00</div></div></header>
+
+.profile-overlay{position:fixed;inset:0;background:#0008;z-index:100;display:flex;align-items:center;justify-content:center;padding:18px}
+.profile-modal{background:#fff;width:min(520px,100%);border-radius:16px;padding:24px;box-shadow:0 20px 60px #0003}
+.profile-modal input{width:100%;padding:12px;border:1px solid #ccd3da;border-radius:9px;margin:6px 0 12px;font-size:16px}
+.admin-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:16px 0}
+.admin-toolbar input,.admin-toolbar select{min-width:180px}
+.admin-table-wrap{overflow:auto;border:1px solid #e1e6eb;border-radius:12px}
+.admin-table{width:100%;border-collapse:collapse;min-width:900px}
+.admin-table th,.admin-table td{padding:12px;border-bottom:1px solid #e8edf1;text-align:right;vertical-align:top}
+.admin-table th{background:#f6f8fa;position:sticky;top:0}
+.admin-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.admin-tabs button.active{background:#1565c0;color:#fff}
+.admin-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.admin-kpi{background:#f8fafc;border:1px solid #dfe5ea;border-radius:12px;padding:16px}
+.admin-kpi b{font-size:28px;display:block;margin-top:6px}
+.user-label{font-weight:700}
+@media(max-width:700px){.admin-table{min-width:760px}.admin-toolbar>*{flex:1 1 100%}}
+
+.start-shell{max-width:980px;margin:0 auto}
+.start-hero{text-align:center;padding:12px 0 6px}
+.start-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.start-card{border:1px solid #dfe5ea;border-radius:16px;padding:22px;background:#fff;cursor:pointer;min-height:170px;display:flex;flex-direction:column;justify-content:space-between;transition:.15s transform,.15s box-shadow}
+.start-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px #00000012}
+.start-card .icon{font-size:32px}.start-card h3{margin:8px 0}.start-card p{color:#68737d;line-height:1.5;margin:0}
+.study-toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:14px 0}
+.study-toolbar input,.study-toolbar select{padding:10px;border:1px solid #ccd3da;border-radius:8px}
+.study-question{border:1px solid #e1e6eb;border-radius:12px;padding:16px;margin:10px 0;background:#fff}
+.study-question .answer-box{background:#f7faf8;border:1px solid #dce9df;border-radius:10px;padding:12px;margin-top:10px}
+.flash-wrap{max-width:760px;margin:20px auto}
+.flash-card{perspective:1200px;min-height:380px;cursor:pointer}
+.flash-inner{position:relative;width:100%;min-height:380px;transition:transform .5s;transform-style:preserve-3d}
+.flash-card.flipped .flash-inner{transform:rotateY(180deg)}
+.flash-face{position:absolute;inset:0;backface-visibility:hidden;border:1px solid #dfe5ea;border-radius:18px;background:#fff;padding:28px;display:flex;flex-direction:column;justify-content:center;box-shadow:0 8px 30px #0000000d;overflow:auto}
+.flash-back{transform:rotateY(180deg);background:#fbfdfb}
+.flash-face h2{font-size:24px}.flash-source{margin-top:18px;padding-top:12px;border-top:1px solid #e5e9ec;font-size:13px;color:#68737d}
+.flash-nav{display:flex;justify-content:space-between;gap:10px;margin-top:14px}
+.mode-header{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+#timer.idle{opacity:.65}
+@media(max-width:760px){.start-actions{grid-template-columns:1fr}.start-card{min-height:130px}.flash-card,.flash-inner{min-height:440px}}
+
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body><header><div style="display:flex;gap:10px;align-items:center"><button id="menuBtn" class="menu-btn hidden" aria-label="תפריט" onclick="openDrawer()">☰</button><div><div class="brand">סימולטור רישוי רפואת שיניים</div><small>180 שאלות • מצב סימולציה</small></div></div><div class="account-bar"><span id="userDisplay" class="user-label"></span><span id="userEmail" class="muted"></span><button id="logoutBtn" class="secondary hidden" onclick="logoutUser()">יציאה</button><div id="timer" class="idle">03:00:00</div></div></header>
 <div id="drawerOverlay" class="drawer-overlay hidden" onclick="closeDrawer()"></div>
 <aside id="drawer" class="drawer hidden" aria-label="תפריט ראשי">
   <button class="secondary close" onclick="closeDrawer()">✕</button>
@@ -26,7 +66,7 @@
   <h1>כניסה למערכת הבחינות</h1>
   <p class="muted">לכל משתמש נשמרת היסטוריית מבחנים נפרדת. משתמשים אחרים אינם יכולים לצפות בציונים שלך.</p>
   <div class="auth-grid">
-    <input id="authEmail" type="email" autocomplete="email" placeholder="אימייל">
+    <input id="signupFirstName" placeholder="שם פרטי" autocomplete="given-name"><input id="signupLastName" placeholder="שם משפחה" autocomplete="family-name"><input id="signupPhone" type="tel" placeholder="טלפון" autocomplete="tel"><input id="authEmail" type="email" autocomplete="email" placeholder="אימייל">
     <input id="authPassword" type="password" autocomplete="current-password" placeholder="סיסמה, לפחות 6 תווים">
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" onclick="loginUser()">כניסה</button><button class="secondary" onclick="signupUser()">הרשמה</button></div>
     <div id="authMsg"></div>
@@ -59,7 +99,68 @@
   </div>
   <div id="adminContent"></div>
 </section>
-<section id="exam" class="card hidden"><div class="meta"><span class="tag" id="num"></span><span class="tag" id="topic"></span><span class="tag" id="source"></span></div><h2 id="stem"></h2><div id="questionImage"></div><div id="options"></div><label><input type="checkbox" id="flag"> סימון לחזרה</label><div class="nav"><button class="secondary" onclick="move(-1)">הקודמת</button><button class="danger" onclick="finish()">סיום והגשה</button><button class="primary" onclick="move(1)">הבאה</button></div><div id="grid" aria-label="ניווט מהיר בין שאלות"></div></section><section id="results" class="card hidden"><h1>תוצאות וסקירת תשובות</h1><div id="score"></div><div class="result-actions"><button class="print-btn" onclick="window.print()">הדפסה / שמירה כ PDF</button><button class="export-btn" onclick="exportReviewHtml()">ייצוא סיכום ל HTML</button></div><div class="filters"><select id="statusFilter" onchange="renderReview()"><option value="all">כל השאלות</option><option value="wrong">שגויות</option><option value="correct">נכונות</option><option value="unanswered">לא נענו</option><option value="flagged">סומנו לחזרה</option></select><select id="topicFilter" onchange="renderReview()"><option value="all">כל התחומים</option></select><input type="search" id="search" placeholder="חיפוש בשאלות" oninput="renderReview()"></div><div id="review"></div></section></main><script>
+
+<section id="startScreen" class="card hidden start-shell" style="margin-bottom:18px">
+  <div class="start-hero">
+    <h1>מה תרצה לעשות?</h1>
+    <p class="muted">בחר מצב עבודה. שעון הבחינה מתחיל רק לאחר לחיצה על "התחלת מבחן חדש".</p>
+  </div>
+  <div class="start-actions">
+    <div class="start-card" onclick="startNewExam()">
+      <div><div class="icon">📝</div><h3>התחלת מבחן חדש</h3><p>סימולציה מלאה של 180 שאלות עם שעון בחינה, סימון לחזרה ותוצאות בסיום.</p></div>
+      <button class="primary">התחלה</button>
+    </div>
+    <div class="start-card" onclick="openQuestionReview()">
+      <div><div class="icon">📚</div><h3>מעבר על שאלות ותשובות</h3><p>צפייה מסודרת בבנק השאלות, התשובה הנכונה, ההסבר ומקור האימות.</p></div>
+      <button class="secondary">פתיחה</button>
+    </div>
+    <div class="start-card" onclick="openStudyCards()">
+      <div><div class="icon">🧠</div><h3>למידה למבחן</h3><p>כרטיסיות לימוד מסתובבות. צד אחד שאלה, צד שני תשובה, הסבר ומקור.</p></div>
+      <button class="secondary">לימוד</button>
+    </div>
+  </div>
+</section>
+
+<section id="questionReviewMode" class="card hidden" style="margin-bottom:18px">
+  <div class="mode-header"><h1>שאלות ותשובות</h1><button class="secondary" onclick="goHome()">חזרה למסך הראשי</button></div>
+  <div class="study-toolbar">
+    <input id="reviewBankSearch" type="search" placeholder="חיפוש בשאלות" oninput="renderQuestionBankReview()">
+    <select id="reviewBankTopic" onchange="renderQuestionBankReview()"><option value="all">כל התחומים</option></select>
+    <select id="reviewBankVerification" onchange="renderQuestionBankReview()"><option value="all">כל השאלות</option><option value="verified_authoritative">מאומתות</option><option value="needs_literature_check">נדרש אימות</option></select>
+  </div>
+  <div id="questionBankReview"></div>
+</section>
+
+<section id="studyCardsMode" class="card hidden" style="margin-bottom:18px">
+  <div class="mode-header"><h1>כרטיסיות לימוד</h1><button class="secondary" onclick="goHome()">חזרה למסך הראשי</button></div>
+  <div class="study-toolbar">
+    <select id="flashTopic" onchange="resetFlashDeck()"><option value="all">כל התחומים</option></select>
+    <select id="flashVerification" onchange="resetFlashDeck()"><option value="verified_authoritative">מאומתות בלבד</option><option value="all">כל השאלות</option></select>
+    <span id="flashCounter" class="tag"></span>
+  </div>
+  <div class="flash-wrap">
+    <div id="flashCard" class="flash-card" onclick="toggleFlashCard()">
+      <div class="flash-inner">
+        <div class="flash-face flash-front"><div id="flashFront"></div><p class="muted">לחץ על הכרטיס כדי להפוך אותו</p></div>
+        <div class="flash-face flash-back"><div id="flashBack"></div></div>
+      </div>
+    </div>
+    <div class="flash-nav"><button class="secondary" onclick="event.stopPropagation();moveFlash(-1)">הקודם</button><button class="primary" onclick="event.stopPropagation();toggleFlashCard()">הפוך כרטיס</button><button class="secondary" onclick="event.stopPropagation();moveFlash(1)">הבא</button></div>
+  </div>
+</section>
+<section id="exam" class="card hidden"><div class="meta"><span class="tag" id="num"></span><span class="tag" id="topic"></span><span class="tag" id="source"></span></div><h2 id="stem"></h2><div id="questionImage"></div><div id="options"></div><label><input type="checkbox" id="flag"> סימון לחזרה</label><div class="nav"><button class="secondary" onclick="move(-1)">הקודמת</button><button class="danger" onclick="finish()">סיום והגשה</button><button class="primary" onclick="move(1)">הבאה</button></div><div id="grid" aria-label="ניווט מהיר בין שאלות"></div></section><section id="results" class="card hidden"><h1>תוצאות וסקירת תשובות</h1><div id="score"></div><div class="result-actions"><button class="print-btn" onclick="window.print()">הדפסה / שמירה כ PDF</button><button class="export-btn" onclick="exportReviewHtml()">ייצוא סיכום ל HTML</button></div><div class="filters"><select id="statusFilter" onchange="renderReview()"><option value="all">כל השאלות</option><option value="wrong">שגויות</option><option value="correct">נכונות</option><option value="unanswered">לא נענו</option><option value="flagged">סומנו לחזרה</option></select><select id="topicFilter" onchange="renderReview()"><option value="all">כל התחומים</option></select><input type="search" id="search" placeholder="חיפוש בשאלות" oninput="renderReview()"></div><div id="review"></div></section></main>
+<div id="profileOverlay" class="profile-overlay hidden">
+ <div class="profile-modal" dir="rtl">
+  <h2>השלמת פרטים</h2>
+  <p class="muted">לפני הכניסה למערכת יש להשלים את פרטי המשתמש.</p>
+  <label>שם פרטי<input id="profileFirstName" autocomplete="given-name"></label>
+  <label>שם משפחה<input id="profileLastName" autocomplete="family-name"></label>
+  <label>טלפון<input id="profilePhone" type="tel" autocomplete="tel"></label>
+  <div id="profileMsg"></div>
+  <button class="primary" onclick="saveProfileAndContinue()">שמירה והמשך</button>
+ </div>
+</div>
+<script>
 const SUPABASE_URL='https://bgbvvrkvogegvgefkluk.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_5_oo-wedbC9dCfBhHvU-lA_XYFfNrV_';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
@@ -67,7 +168,7 @@ let currentUser=null;
 let examStartedAt=null;
 let isAdmin=false;
 let adminCurrentTab='users';
-function hideMainSections(){ ['dashboard','bugReporter','adminPanel','results'].forEach(id=>document.getElementById(id)?.classList.add('hidden')); exam.classList.add('hidden'); }
+function hideMainSections(){ ['dashboard','bugReporter','adminPanel','results','startScreen','questionReviewMode','studyCardsMode'].forEach(id=>document.getElementById(id)?.classList.add('hidden')); exam.classList.add('hidden'); }
 function openDrawer(){ drawer.classList.remove('hidden');drawerOverlay.classList.remove('hidden'); }
 function closeDrawer(){ drawer.classList.add('hidden');drawerOverlay.classList.add('hidden'); }
 function showExamHome(){ closeDrawer(); hideMainSections(); exam.classList.remove('hidden'); if(!examStartedAt) examStartedAt=new Date(); render(); logEvent('view_exam'); }
@@ -78,49 +179,55 @@ async function logEvent(event_type,details={}){ if(!currentUser)return; try{ awa
 window.addEventListener('error',e=>logEvent('client_error',{message:String(e.message||''),source:String(e.filename||''),line:e.lineno||null}));
 window.addEventListener('unhandledrejection',e=>logEvent('client_unhandled_rejection',{message:String(e.reason?.message||e.reason||'')}));
 
+
+let currentProfile=null;
+async function loadMyProfile(){
+  const {data,error}=await sb.rpc('my_profile');
+  if(error){console.error('profile',error);return null}
+  return Array.isArray(data)?(data[0]||null):data;
+}
+function profileComplete(p){return !!(p&&p.first_name&&p.last_name&&p.phone)}
+async function ensureProfile(user){
+  if(!user)return false;
+  const p=await loadMyProfile(); currentProfile=p;
+  if(profileComplete(p)){
+    userDisplay.textContent='משתמש: '+p.first_name+' '+p.last_name;
+    userEmail.textContent=p.email||user.email||'';
+    profileOverlay.classList.add('hidden'); return true;
+  }
+  userDisplay.textContent='';
+  userEmail.textContent=user.email||'';
+  profileFirstName.value=p?.first_name||'';
+  profileLastName.value=p?.last_name||'';
+  profilePhone.value=p?.phone||'';
+  profileOverlay.classList.remove('hidden');
+  return false;
+}
+async function saveProfileAndContinue(){
+  profileMsg.innerHTML='';
+  const f=profileFirstName.value.trim(),l=profileLastName.value.trim(),p=profilePhone.value.trim();
+  if(!f||!l||!p){profileMsg.innerHTML='<div class="error-box">יש למלא שם פרטי, שם משפחה וטלפון.</div>';return}
+  const {error}=await sb.rpc('save_my_profile',{p_first_name:f,p_last_name:l,p_phone:p});
+  if(error){profileMsg.innerHTML='<div class="error-box">'+esc(error.message)+'</div>';return}
+  currentProfile={...(currentProfile||{}),first_name:f,last_name:l,phone:p,email:currentUser?.email};
+  userDisplay.textContent='משתמש: '+f+' '+l;
+  profileOverlay.classList.add('hidden');
+  await showPostLoginHome();
+}
 async function setAuthUI(user){
   currentUser=user||null;
+  auth.classList.toggle('hidden',!!user);
+  logoutBtn.classList.toggle('hidden',!user);
+  menuBtn.classList.toggle('hidden',!user);
   if(!user){
-    auth.classList.remove('hidden');
-    exam.classList.add('hidden');
-    dashboard.classList.add('hidden');
-    logoutBtn.classList.add('hidden');
-    menuBtn.classList.add('hidden');
-    userEmail.textContent='';
+    hideMainSections();
+    userDisplay.textContent=''; userEmail.textContent='';
+    stopExamTimer(true);
     return;
   }
-  const {data:approval,error:approvalError}=await sb.from('user_access_approvals').select('status,note').eq('user_id',user.id).maybeSingle();
-  const approved=!approvalError && approval && approval.status==='approved';
-  if(!approved){
-    currentUser=null;
-    await sb.auth.signOut();
-    auth.classList.remove('hidden');
-    exam.classList.add('hidden');
-    dashboard.classList.add('hidden');
-    logoutBtn.classList.add('hidden');
-    userEmail.textContent='';
-    const status=approval?.status||'pending';
-    authMsg.innerHTML=status==='rejected'
-      ? '<div class="error-box">הבקשה לחשבון נדחתה. יש לפנות למנהל המערכת.</div>'
-      : '<div class="success-box">החשבון נרשם וממתין לאישור מנהל. לאחר האישור ניתן יהיה להתחבר למערכת.</div>';
-    return;
-  }
-  auth.classList.add('hidden');
-  dashboard.classList.add('hidden');
-  bugReporter.classList.add('hidden');
-  adminPanel.classList.add('hidden');
-  exam.classList.remove('hidden');
-  logoutBtn.classList.remove('hidden');
-  menuBtn.classList.remove('hidden');
-  userEmail.textContent=user.email||'';
-  drawerUser.textContent=user.email||'';
-  const {data:adminRow}=await sb.from('app_admins').select('role').eq('user_id',user.id).maybeSingle();
-  isAdmin=!!adminRow;
-  adminMenuBtn.classList.toggle('hidden',!isAdmin);
-  if(!examStartedAt) examStartedAt=new Date();
-  await loadHistory();
-  await logEvent('login_or_session_restored',{admin:isAdmin});
-  render();
+  const ok=await ensureProfile(user);
+  if(!ok){hideMainSections();return}
+  await showPostLoginHome();
 }
 async function loginUser(){
   authMsg.innerHTML='';
@@ -131,14 +238,17 @@ async function loginUser(){
 }
 async function signupUser(){
   authMsg.innerHTML='';
+  const first=signupFirstName.value.trim(),last=signupLastName.value.trim(),phone=signupPhone.value.trim();
   const email=authEmail.value.trim(),password=authPassword.value;
-  if(!email||password.length<6){authMsg.innerHTML='<div class="error-box">יש להזין אימייל וסיסמה של לפחות 6 תווים.</div>';return}
-  const {data,error}=await sb.auth.signUp({email,password});
+  if(!first||!last||!phone||!email||password.length<6){authMsg.innerHTML='<div class="error-box">יש למלא שם פרטי, שם משפחה, טלפון, אימייל וסיסמה של לפחות 6 תווים.</div>';return}
+  const {data,error}=await sb.auth.signUp({email,password,options:{data:{first_name:first,last_name:last,phone}}});
   if(error){authMsg.innerHTML='<div class="error-box">'+esc(error.message)+'</div>';return}
   if(data.session){
-    await sb.auth.signOut();
-  }
-  authMsg.innerHTML='<div class="success-box">ההרשמה התקבלה וממתינה לאישור מנהל. תקבל גישה רק לאחר אישור ידני.</div>';
+    currentUser=data.user;
+    const {error:pe}=await sb.rpc('save_my_profile',{p_first_name:first,p_last_name:last,p_phone:phone});
+    if(pe)console.error(pe);
+    await setAuthUI(data.user);
+  } else authMsg.innerHTML='<div class="success-box">ההרשמה התקבלה וממתינה לאישור. לאחר האישור ניתן להתחבר.</div>';
 }
 async function logoutUser(){ await sb.auth.signOut(); currentUser=null; location.reload(); }
 async function loadHistory(){
@@ -276,7 +386,124 @@ function imageHtml(q){
 }
 let idx=0,ans=Array(Q.length).fill(null),flags=Array(Q.length).fill(false),seconds=3*60*60;
 function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}function render(){let q=Q[idx];num.textContent=`שאלה ${idx+1} מתוך ${Q.length}`;topic.textContent=q.topic;source.textContent=(q.verificationStatus==='verified_authoritative'?'✓ מאומת':'⚠ נדרש אימות')+' • '+q.source+(q.variant?' • וריאציית תרגול':'');stem.textContent=q.stem;questionImage.innerHTML=imageHtml(q);options.innerHTML=q.options.map((o,i)=>`<label class="opt"><input type="radio" name="o" ${ans[idx]===i?'checked':''} onchange="ans[${idx}]=${i};renderGrid()">${String.fromCharCode(1488+i)}. ${esc(o)}</label>`).join('');flag.checked=flags[idx];renderGrid()}flag.onchange=()=>{flags[idx]=flag.checked;renderGrid()};function move(d){idx=Math.max(0,Math.min(Q.length-1,idx+d));render()}function renderGrid(){grid.innerHTML=Q.map((_,i)=>`<button class="${ans[i]!=null?'answered ':''}${i===idx?'current ':''}${flags[i]?'flagged':''}" onclick="idx=${i};render()">${i+1}</button>`).join('')}
-setInterval(()=>{if(seconds>0)seconds--;let h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),s=seconds%60;timer.textContent=[h,m,s].map(x=>String(x).padStart(2,'0')).join(':');if(seconds===0)finish()},1000);
-async function finish(){if(!confirm('להגיש את הבחינה ולעבור למסך התוצאות?'))return;await logEvent('exam_submitted',{question_index:idx});exam.classList.add('hidden');results.classList.remove('hidden');let topics=[...new Set(Q.map(q=>q.topic))];topicFilter.innerHTML='<option value="all">כל התחומים</option>'+topics.map(t=>`<option>${t}</option>`).join('');renderReview();const saved=await saveAttempt();score.insertAdjacentHTML('afterbegin',saved?'<div class="success-box">התוצאה נשמרה בחשבון האישי שלך.</div>':'<div class="error-box">התוצאה מוצגת כאן, אך השמירה לחשבון נכשלה.</div>');scrollTo(0,0)}
-function state(i){let q=Q[i];if(ans[i]==null)return'unanswered';if(q.scoreEligible===false||q.answer==null)return'unverified';return ans[i]===q.answer?'correct':'wrong'}function renderReview(){let sf=statusFilter.value,tf=topicFilter.value,term=search.value.trim();let verified=Q.filter(q=>q.scoreEligible!==false&&q.answer!=null).length,correct=Q.reduce((n,q,i)=>n+(q.scoreEligible!==false&&q.answer!=null&&ans[i]===q.answer),0);score.innerHTML=`<p><b>שאלות הנכללות בציון המאומת:</b> ${verified} מתוך ${Q.length} שאלות. ציון: <b>${verified?Math.round(correct/verified*100):0}%</b>.</p><p class="muted">הציון מחושב רק משאלות שסומנו כמאומתות מול מקור מוסמך. שאלות המסומנות "נדרש לבדוק מול הספרות" מוצגות לתרגול אך אינן משפיעות על הציון המאומת.</p>`;review.innerHTML=Q.map((q,i)=>[q,i]).filter(([q,i])=>{let st=state(i);return(sf==='all'||sf===st||(sf==='flagged'&&flags[i]))&&(tf==='all'||q.topic===tf)&&(!term||q.stem.includes(term)||q.options.join(' ').includes(term))}).map(([q,i])=>{let st=state(i),chosen=ans[i],label=st==='correct'?'<span class="good">נכון</span>':st==='wrong'?'<span class="bad">שגוי</span>':st==='unanswered'?'<span class="warn">לא נענה</span>':'<span class="warn">ללא מפתח מאומת</span>';let corr=q.answer!=null?q.options[q.answer]:'לא נקבעה בגרסה זו';let optionAudit=q.options.map((o,oi)=>{let isCorrect=oi===q.answer,isChosen=oi===chosen;let why=isCorrect?q.explanation:'אפשרות זו אינה התשובה המתאימה ביותר לנתונים או לעיקרון שנבדק בשאלה; ההסבר לתשובה הנכונה מופיע להלן.';return `<div style="padding:8px 10px;margin:6px 0;border:1px solid #e2e6ea;border-radius:8px"><b>${String.fromCharCode(1488+oi)}. ${esc(o)}</b> ${isCorrect?'<span class="good">✓ נכונה</span>':'<span class="bad">✗ אינה נכונה</span>'}${isChosen?' <span class="tag">סומנה על ידך</span>':''}<div class="muted" style="margin-top:4px">${esc(why)}</div></div>`}).join('');return `<div class="review"><h3>שאלה ${i+1} • ${q.topic} • ${label}</h3><p>${esc(q.stem)}</p>${imageHtml(q)}<p><b>התשובה שסומנה:</b> ${chosen!=null?esc(q.options[chosen]):'לא סומנה תשובה'}</p><p><b>התשובה הנכונה:</b> ${esc(corr)}</p><p><b>הסבר מרכזי:</b> ${esc(q.explanation)}</p><div>${optionAudit}</div><small><b>מקור:</b> ${esc(q.reference||q.source||'לא צוין')}${q.referenceUrl&&q.referenceUrl.startsWith('http')?` • <a href="${q.referenceUrl}" target="_blank" rel="noopener">פתח מקור</a>`:''}<br><b>סטטוס אימות:</b> ${q.verificationStatus==='verified_authoritative'?'מאומת מול מקור מוסמך':'נדרש לבדוק מול הספרות'}${q.verificationNote?` • ${esc(q.verificationNote)}`:''}</small></div>`}).join('')}render();
+
+let timerHandle=null;
+let examInProgress=false;
+function renderTimer(){
+  let h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),s=seconds%60;
+  timer.textContent=[h,m,s].map(x=>String(x).padStart(2,'0')).join(':');
+}
+function startExamTimer(){
+  if(timerHandle)clearInterval(timerHandle);
+  timer.classList.remove('idle');
+  timerHandle=setInterval(()=>{
+    if(!examInProgress)return;
+    if(seconds>0)seconds--;
+    renderTimer();
+    if(seconds===0){clearInterval(timerHandle);timerHandle=null;finish(true)}
+  },1000);
+}
+function stopExamTimer(reset=false){
+  examInProgress=false;
+  if(timerHandle){clearInterval(timerHandle);timerHandle=null}
+  if(reset){seconds=3*60*60;renderTimer();timer.classList.add('idle')}
+}
+
+async function finish(fromTimeout=false){if(!fromTimeout&&!confirm('להגיש את הבחינה ולעבור למסך התוצאות?'))return;stopExamTimer(false);await logEvent('exam_submitted',{question_index:idx});exam.classList.add('hidden');results.classList.remove('hidden');let topics=[...new Set(Q.map(q=>q.topic))];topicFilter.innerHTML='<option value="all">כל התחומים</option>'+topics.map(t=>`<option>${t}</option>`).join('');renderReview();const saved=await saveAttempt();score.insertAdjacentHTML('afterbegin',saved?'<div class="success-box">התוצאה נשמרה בחשבון האישי שלך.</div>':'<div class="error-box">התוצאה מוצגת כאן, אך השמירה לחשבון נכשלה.</div>');scrollTo(0,0)}
+function state(i){let q=Q[i];if(ans[i]==null)return'unanswered';if(q.scoreEligible===false||q.answer==null)return'unverified';return ans[i]===q.answer?'correct':'wrong'}function renderReview(){let sf=statusFilter.value,tf=topicFilter.value,term=search.value.trim();let verified=Q.filter(q=>q.scoreEligible!==false&&q.answer!=null).length,correct=Q.reduce((n,q,i)=>n+(q.scoreEligible!==false&&q.answer!=null&&ans[i]===q.answer),0);score.innerHTML=`<p><b>שאלות הנכללות בציון המאומת:</b> ${verified} מתוך ${Q.length} שאלות. ציון: <b>${verified?Math.round(correct/verified*100):0}%</b>.</p><p class="muted">הציון מחושב רק משאלות שסומנו כמאומתות מול מקור מוסמך. שאלות המסומנות "נדרש לבדוק מול הספרות" מוצגות לתרגול אך אינן משפיעות על הציון המאומת.</p>`;review.innerHTML=Q.map((q,i)=>[q,i]).filter(([q,i])=>{let st=state(i);return(sf==='all'||sf===st||(sf==='flagged'&&flags[i]))&&(tf==='all'||q.topic===tf)&&(!term||q.stem.includes(term)||q.options.join(' ').includes(term))}).map(([q,i])=>{let st=state(i),chosen=ans[i],label=st==='correct'?'<span class="good">נכון</span>':st==='wrong'?'<span class="bad">שגוי</span>':st==='unanswered'?'<span class="warn">לא נענה</span>':'<span class="warn">ללא מפתח מאומת</span>';let corr=q.answer!=null?q.options[q.answer]:'לא נקבעה בגרסה זו';let optionAudit=q.options.map((o,oi)=>{let isCorrect=oi===q.answer,isChosen=oi===chosen;let why=isCorrect?q.explanation:'אפשרות זו אינה התשובה המתאימה ביותר לנתונים או לעיקרון שנבדק בשאלה; ההסבר לתשובה הנכונה מופיע להלן.';return `<div style="padding:8px 10px;margin:6px 0;border:1px solid #e2e6ea;border-radius:8px"><b>${String.fromCharCode(1488+oi)}. ${esc(o)}</b> ${isCorrect?'<span class="good">✓ נכונה</span>':'<span class="bad">✗ אינה נכונה</span>'}${isChosen?' <span class="tag">סומנה על ידך</span>':''}<div class="muted" style="margin-top:4px">${esc(why)}</div></div>`}).join('');return `<div class="review"><h3>שאלה ${i+1} • ${q.topic} • ${label}</h3><p>${esc(q.stem)}</p>${imageHtml(q)}<p><b>התשובה שסומנה:</b> ${chosen!=null?esc(q.options[chosen]):'לא סומנה תשובה'}</p><p><b>התשובה הנכונה:</b> ${esc(corr)}</p><p><b>הסבר מרכזי:</b> ${esc(q.explanation)}</p><div>${optionAudit}</div><small><b>מקור:</b> ${esc(q.reference||q.source||'לא צוין')}${q.referenceUrl&&q.referenceUrl.startsWith('http')?` • <a href="${q.referenceUrl}" target="_blank" rel="noopener">פתח מקור</a>`:''}<br><b>סטטוס אימות:</b> ${q.verificationStatus==='verified_authoritative'?'מאומת מול מקור מוסמך':'נדרש לבדוק מול הספרות'}${q.verificationNote?` • ${esc(q.verificationNote)}`:''}</small></div>`}).join('')}
+async function showPostLoginHome(){
+  hideMainSections();
+  startScreen.classList.remove('hidden');
+  dashboard.classList.add('hidden');
+  stopExamTimer(true);
+  await loadHistory();
+}
+function goHome(){
+  hideMainSections();
+  startScreen.classList.remove('hidden');
+  stopExamTimer(true);
+  scrollTo(0,0);
+}
+function startNewExam(){
+  hideMainSections();
+  ans=Array(Q.length).fill(null);
+  flags=Array(Q.length).fill(false);
+  idx=0;
+  seconds=3*60*60;
+  examStartedAt=new Date();
+  examInProgress=true;
+  renderTimer();
+  exam.classList.remove('hidden');
+  startExamTimer();
+  render();
+  logEvent('exam_started',{question_count:Q.length});
+  scrollTo(0,0);
+}
+function populateStudyTopics(){
+  const topics=[...new Set(BANK.map(q=>q.topic).filter(Boolean))].sort();
+  const opts='<option value="all">כל התחומים</option>'+topics.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
+  if(document.getElementById('reviewBankTopic'))reviewBankTopic.innerHTML=opts;
+  if(document.getElementById('flashTopic'))flashTopic.innerHTML=opts;
+}
+function openQuestionReview(){
+  hideMainSections();
+  stopExamTimer(true);
+  questionReviewMode.classList.remove('hidden');
+  populateStudyTopics();
+  renderQuestionBankReview();
+  logEvent('study_question_review_opened');
+  scrollTo(0,0);
+}
+function renderQuestionBankReview(){
+  const term=(reviewBankSearch?.value||'').trim().toLowerCase();
+  const topic=reviewBankTopic?.value||'all',verification=reviewBankVerification?.value||'all';
+  const rows=BANK.filter(q=>(topic==='all'||q.topic===topic)&&(verification==='all'||q.verificationStatus===verification)&&(!term||(q.stem||'').toLowerCase().includes(term)||(q.options||[]).join(' ').toLowerCase().includes(term)));
+  questionBankReview.innerHTML=rows.map((q,i)=>{
+    const correct=q.answer!=null&&q.options?.[q.answer]!=null?q.options[q.answer]:'לא נקבע מפתח מאומת';
+    return `<article class="study-question"><div class="meta"><span class="tag">${esc(q.topic||'')}</span><span class="tag">${q.verificationStatus==='verified_authoritative'?'✓ מאומת':'⚠ נדרש אימות'}</span></div><h3>${esc(q.stem||'')}</h3>${imageHtml(q)}<ol>${(q.options||[]).map(o=>`<li>${esc(o)}</li>`).join('')}</ol><div class="answer-box"><b>תשובה:</b> ${esc(correct)}<br><b>הסבר:</b> ${esc(q.explanation||'אין הסבר זמין')}<div class="flash-source"><b>מקור:</b> ${esc(q.reference||q.source||'לא צוין')}${q.referenceUrl&&q.referenceUrl.startsWith('http')?` · <a href="${q.referenceUrl}" target="_blank" rel="noopener">פתח מקור</a>`:''}</div></div></article>`
+  }).join('')||'<p class="muted">לא נמצאו שאלות בהתאם לסינון.</p>';
+}
+let flashDeck=[],flashIndex=0;
+function openStudyCards(){
+  hideMainSections();
+  stopExamTimer(true);
+  studyCardsMode.classList.remove('hidden');
+  populateStudyTopics();
+  resetFlashDeck();
+  logEvent('flashcards_opened');
+  scrollTo(0,0);
+}
+function resetFlashDeck(){
+  const topic=flashTopic?.value||'all',verification=flashVerification?.value||'verified_authoritative';
+  flashDeck=BANK.filter(q=>(topic==='all'||q.topic===topic)&&(verification==='all'||q.verificationStatus===verification)&&q.answer!=null);
+  flashIndex=0; renderFlashCard();
+}
+function renderFlashCard(){
+  flashCard.classList.remove('flipped');
+  if(!flashDeck.length){flashFront.innerHTML='<h2>אין כרטיסיות בסינון זה</h2>';flashBack.innerHTML='';flashCounter.textContent='0/0';return}
+  const q=flashDeck[flashIndex],correct=q.options?.[q.answer]??'לא נקבע';
+  flashCounter.textContent=`${flashIndex+1} מתוך ${flashDeck.length}`;
+  flashFront.innerHTML=`<div class="meta"><span class="tag">${esc(q.topic||'')}</span><span class="tag">${q.verificationStatus==='verified_authoritative'?'✓ מאומת':'⚠ נדרש אימות'}</span></div><h2>${esc(q.stem||'')}</h2>${imageHtml(q)}`;
+  flashBack.innerHTML=`<h2>${esc(correct)}</h2><p><b>הסבר:</b> ${esc(q.explanation||'אין הסבר זמין')}</p><div class="flash-source"><b>מקור:</b> ${esc(q.reference||q.source||'לא צוין')}${q.referenceUrl&&q.referenceUrl.startsWith('http')?` · <a href="${q.referenceUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">פתח מקור</a>`:''}<br><b>סטטוס:</b> ${q.verificationStatus==='verified_authoritative'?'מאומת מול מקור מוסמך':'נדרש לבדוק מול הספרות'}</div>`;
+}
+function toggleFlashCard(){flashCard.classList.toggle('flipped')}
+function moveFlash(d){if(!flashDeck.length)return;flashIndex=(flashIndex+d+flashDeck.length)%flashDeck.length;renderFlashCard()}
+
+render();
+
+/* UX profile/admin patch */
+async function adminUserAction(action,userId){
+ const {error}=await sb.functions.invoke('admin-user-actions',{body:{action,user_id:userId,redirect_to:location.origin}});
+ if(error){alert('הפעולה נכשלה: '+error.message);return}
+ alert(action==='password_reset'?'נשלח מייל לאיפוס סיסמה.':'הפעולה בוצעה.');
+ if(typeof loadAdminUsers==='function')loadAdminUsers();
+}
+function userFullName(u){return [u.first_name,u.last_name].filter(Boolean).join(' ')||'טרם הושלמו פרטים'}
+function csvCell(v){return '"'+String(v??'').replaceAll('"','""')+'"'}
+function exportAdminUsersCSV(rows){
+ const h=['שם','שם משפחה','טלפון','אימייל','סטטוס','מבחנים','ממוצע','כניסה אחרונה'];
+ const body=rows.map(u=>[u.first_name,u.last_name,u.phone,u.email,u.status,u.attempt_count,u.avg_score,u.last_sign_in_at].map(csvCell).join(','));
+ const blob=new Blob(['\ufeff'+h.map(csvCell).join(',')+'\n'+body.join('\n')],{type:'text/csv;charset=utf-8'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='users.csv';a.click();URL.revokeObjectURL(a.href);
+}
 </script></body></html>
